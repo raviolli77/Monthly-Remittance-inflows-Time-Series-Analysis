@@ -1,0 +1,40 @@
+setwd('C:/Users/Raul/Desktop')
+# Information found at:http://www.worldbank.org/prospects/migrationandremittances
+install.packages("forecast")
+library(forecast)
+remittance <- read.csv("remittance.csv", header=T)
+remittance.ts <- ts(remittance$Mexico, frequency=12, start=c(1,1))
+remittance.ts
+
+plot.ts(remittance.ts, ylab = 'Monthly Inflow(In $ millions)',main='Time Series Plot of Monthly Remittance')
+acf(remittance.ts, main ="ACF Of Remittance")
+pacf(remittance.ts, main= "PACF Of Remittance")
+fit = auto.arima(remittance.ts)
+fit
+fit200 = Arima(remittance.ts, order=c(2,0,0))
+fit200
+fit201 = Arima(remittance.ts, order=c(2, 0, 1))
+fit201
+fit202 = Arima(remittance.ts, order=c(2, 0, 2))
+fit202
+fit213 = Arima(remittance.ts, order=c(2, 1, 3))
+fit213
+fit210x200=Arima(remittance.ts,order=c(2,1,0), seasonal = list(order = c(2, 0, 0), period =12))
+fit210x200
+fit211x210=Arima(remittance.ts,order=c(2,1,1), seasonal = list(order = c(2, 0, 0), period =12))
+fit211x210
+fit210x210=Arima(remittance.ts,order=c(2,1,0), seasonal = list(order = c(2, 1, 0), period =12))
+fit210x210
+fit210x211=Arima(remittance.ts,order=c(2,1,0), seasonal = list(order = c(2, 1, 1), period =12))
+fit210x211
+fit210x213=Arima(remittance.ts,order=c(2,1,0), seasonal = list(order = c(2, 1, 3), period =12))
+fit210x213
+c(fit200$aic, fit201$aic, fit202$aic, fit210x200$aic, fit211x210$aic, fit210x210$aic, fit210x211$aic, fit210x213$aic)
+#> c(fit200$aic, fit201$aic, fit202$aic, fit011$aic, fit012$aic, fit210x200$aic, fit211x210$aic, fit210x210$aic, fit210x211$aic, fit210x213$aic)
+#[1] 1077.6995 1079.2201 1073.7763 1078.1129 1079.0948 1005.9927 1007.1790  899.1690  885.8733
+#[10]  884.4674
+
+par(mar=c(3,3,3,3))
+tsdiag(fit210x213)
+plot(forecast(fit210x213))
+fit210x213
